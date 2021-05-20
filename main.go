@@ -3,15 +3,17 @@ package main
 import (
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
+	"log"
+	"net/http"
 )
 
 // HashPassword will hash the password using the bcrypt algorithm
 func HashPassword(rawPassword string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(rawPassword), 12)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(rawPassword), 12)
 	if err != nil {
 		fmt.Println(err)
 	}
-	return string(bytes), nil
+	return string(hashedPassword), nil
 }
 
 // CheckPasswordHash compares the password against the hashed password stored in memory
@@ -21,6 +23,7 @@ func CheckPasswordHash(rawPassword, hashedPassword string) bool {
 }
 
 func main() {
+	port := ":7080"
 	// Ask ask the user for their password and store it in the password variable
 	var rawPassword string
 	fmt.Println("Enter the password you want to encrypt")
@@ -43,5 +46,10 @@ func main() {
 
 	// display the confirmation result of the password
 	fmt.Println("\nMatch:   ", testPassword)
+	// https://blog.logrocket.com/creating-a-web-server-with-golang/
+	fmt.Printf("Server is running at http://localhost%s", port)
+	if err := http.ListenAndServe(port, nil); err != nil {
+		log.Fatal(err)
+	}
 
 }
