@@ -22,6 +22,15 @@ func CheckPasswordHash(rawPassword, hashedPassword string) bool {
 	return err == nil
 }
 
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.Error(w, "404 not found", http.StatusNotFound)
+		return
+
+	}
+	fmt.Fprintf(w, "hello")
+}
+
 func main() {
 	port := ":7080"
 	// Ask ask the user for their password and store it in the password variable
@@ -47,6 +56,9 @@ func main() {
 	// display the confirmation result of the password
 	fmt.Println("\nMatch:   ", testPassword)
 	// https://blog.logrocket.com/creating-a-web-server-with-golang/
+
+	http.HandleFunc("/", indexHandler)
+
 	fmt.Printf("Server is running at http://localhost%s", port)
 	if err := http.ListenAndServe(port, nil); err != nil {
 		log.Fatal(err)
